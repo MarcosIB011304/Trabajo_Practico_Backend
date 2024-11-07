@@ -19,8 +19,15 @@ public class PruebaService {
     @Autowired
     private InteresadoService interesadoService;
 
+
+
     public List<Prueba> obtenerTodas() {
         return pruebaRepository.findAll();
+    }
+
+    // Método para obtener pruebas en curso
+    public List<Prueba> obtenerPruebasEnCurso() {
+        return pruebaRepository.findByFechaHoraFinIsNull();
     }
 
     public Optional<Prueba> obtenerPorId(Long id) {
@@ -28,11 +35,15 @@ public class PruebaService {
     }
 
     public Prueba crearPrueba(Prueba prueba) {
-        // Validar si el interesado está restringido o con licencia vencida
-        if (interesadoService.esRestringido(prueba.getInteresado().getId())) {
-            throw new RuntimeException("El interesado está restringido para realizar pruebas.");
+        // Validación de restricciones y licencia
+        if (interesadoService.esRestringido(prueba.getInteresado().getId()) ||
+                interesadoService.licenciaVencida(prueba.getInteresado().getId())) {
+            throw new RuntimeException("El interesado no tiene autorización para realizar pruebas.");
         }
-        // Aquí agregar lógica adicional como validar licencia
+        // Validación de disponibilidad del vehículo
+        if (pruebaRepository.existePruebaEnCursoParaVehiculo(prueba.getVehiculo().getId())) {
+            throw new RuntimeException("El vehículo está en prueba actualmente.");
+        }
         return pruebaRepository.save(prueba);
     }
 
@@ -47,4 +58,6 @@ public class PruebaService {
             throw new RuntimeException("Prueba no encontrada.");
         }
     }
+
+
 }

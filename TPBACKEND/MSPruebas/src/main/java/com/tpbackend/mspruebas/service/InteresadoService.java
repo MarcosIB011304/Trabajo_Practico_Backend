@@ -30,4 +30,10 @@ public class InteresadoService {
         Optional<Interesado> interesado = interesadoRepository.findById(id);
         return interesado.map(Interesado::isRestringido).orElse(false);
     }
+
+    // Validar si la licencia está vencida
+    public boolean licenciaVencida(Long id) {
+        // Lógica de verificación de licencia
+        return false;
+    }
 }

@@ -25,9 +25,17 @@ public class PruebaController {
         return pruebaService.obtenerPorId(id);
     }
 
-    @PostMapping
+    // Endpoint para crear una nueva prueba
+    @PostMapping("/crear")
     public Prueba crearPrueba(@RequestBody Prueba prueba) {
+        // Llama al servicio para validar restricciones y crear la prueba
         return pruebaService.crearPrueba(prueba);
+    }
+
+    // Endpoint para listar todas las pruebas en curso en un momento dado
+    @GetMapping("/enCurso")
+    public List<Prueba> listarPruebasEnCurso() {
+        return pruebaService.obtenerPruebasEnCurso();
     }
 
     @PutMapping("/{id}/finalizar")
